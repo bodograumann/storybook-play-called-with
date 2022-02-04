@@ -1,3 +1,5 @@
+import { userEvent, within, waitFor } from "@storybook/testing-library";
+import { expect } from "@storybook/jest";
 import MyButton from './Button.vue';
 
 // More on default export: https://storybook.js.org/docs/vue/writing-stories/introduction#default-export
@@ -32,6 +34,14 @@ export const Primary = Template.bind({});
 Primary.args = {
   primary: true,
   label: 'Button',
+};
+Primary.play = async ({ args, canvasElement }) => {
+  const canvas = within(canvasElement);
+  userEvent.click(canvas.getByRole("button"));
+  await waitFor(() => expect(args.onClick).toHaveBeenLastCalledWith({
+    foo: "bar",
+    pi: 42
+  }));
 };
 
 export const Secondary = Template.bind({});
